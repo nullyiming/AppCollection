@@ -1,13 +1,29 @@
 {
    "non_closed": [
       {
-         "line": 23,
-         "column": 1,
+         "line": 88,
+         "column": 38,
+         "scrollX": 670,
+         "scrollY": 5892,
+         "textSize": 41.2261848449707,
+         "uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/初始代码.t"
+      },
+      {
+         "line": 26,
+         "column": 133,
          "scrollX": 0,
          "scrollY": 0,
-         "textSize": 26.533727645874023,
-         "uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/初始代码.t"
+         "textSize": 26.03904914855957,
+         "uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/组件容器\/左侧滑布局.t"
+      },
+      {
+         "line": 25,
+         "column": 70,
+         "scrollX": 0,
+         "scrollY": 171,
+         "textSize": 24.97984504699707,
+         "uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/组件工具.t"
       }
    ],
-   "last_uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/初始代码.t"
+   "last_uri": "file:\/storage\/emulated\/0\/Android\/data\/com.tiecode.develop\/files\/projects\/应用树洞\/源代码\/组件容器\/左侧滑布局.t"
 }
