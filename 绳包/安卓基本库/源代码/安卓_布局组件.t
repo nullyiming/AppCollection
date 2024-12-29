@@ -821,6 +821,16 @@
     @Override
     public rn_1.DrawerLayout onCreateView(android.content.Context context) {
         rn_1.DrawerLayout view = new rn_1.DrawerLayout(context);
+		view.setDrawerListener(new rn_1.DrawerLayout.SimpleDrawerListener(){
+			@Override
+        	public void onDrawerOpened(android.view.View drawerView){
+				#侧滑打开();
+			}
+			@Override
+        	public void onDrawerClosed(android.view.View drawerView){
+				#侧滑关闭();
+			}
+		});
         return view;
     }
 
