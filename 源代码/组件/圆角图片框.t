@@ -1,5 +1,5 @@
 类 圆角图片框 : 可视化组件
-	
+
 	@code
 	public #<圆角图片框>(android.content.Context context) {
 		super(context);
@@ -22,6 +22,8 @@
 		private android.graphics.Bitmap rect;
 		private android.graphics.Bitmap image;
 		private android.graphics.Paint paint;
+		private android.graphics.Matrix matrix;
+		private android.graphics.PorterDuffXfermode porterDuffXfermode;
 
 		public RoundImageView(android.content.Context context){
 			this(context, null);
@@ -33,41 +35,62 @@
 
 		public RoundImageView(android.content.Context context, android.util.AttributeSet attrs, int defStyleAttr){
 			super(context, attrs, defStyleAttr);
-			paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+			this.paint = new android.graphics.Paint();
+			setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+			porterDuffXfermode = new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN);
 		}
 
 		@Override
 		protected void onDraw(android.graphics.Canvas canvas) {
+			//super.onDraw(canvas);
 			if(image != null){
-     		   int bitmapWidth = image.getWidth();
-       		 int bitmapHeight = image.getHeight();
-
-     		   float widthScale = (float) getWidth() / bitmapWidth;
-     		   float heightScale = (float) getHeight() / bitmapHeight;
-      		  float scaleFactor = Math.max(widthScale, heightScale);
-
-      		  android.graphics.Matrix matrix = new android.graphics.Matrix();
-     		   matrix.postScale(scaleFactor, scaleFactor);
-
-      		  // 计算图片居中显示的坐标偏移量
-       		 int dx = (int) ((getWidth() - bitmapWidth * scaleFactor) / 2);
-     		   int dy = (int) ((getHeight() - bitmapHeight * scaleFactor) / 2);
-      		  matrix.postTranslate(dx, dy);
 				int layerId = canvas.saveLayer(0,0, getWidth(), getHeight(), paint, android.graphics.Canvas.ALL_SAVE_FLAG);
-				setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-				initRoundRect();
 				canvas.drawBitmap(rect, 0, 0, paint);
-				paint.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN));
+				paint.setXfermode(porterDuffXfermode);
 				canvas.drawBitmap(image, matrix, paint);
+				//android.widget.Toast.makeText(getContext(), "" + (getDrawable() == null), 0).show();
 				paint.setXfermode(null);
 				canvas.restoreToCount(layerId);
 			}
+	}
+	
+	public void setColorFilter(int color){
+		this.paint.setColorFilter(new android.graphics.PorterDuffColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN));
+		invalidate();
 	}
 
 
 		@Override
 		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+		
+		@Override
+		protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    		super.onSizeChanged(w, h, oldw, oldh);
+   		 // 在这里可以根据新的宽高进行一些和尺寸相关的初始化、资源加载、绘制调整等操作
+			initScale();
+			initRoundRect();
+		}
+
+		
+		private void initScale(){
+			if(image != null){
+				int bitmapWidth = image.getWidth();
+       		 int bitmapHeight = image.getHeight();
+
+     		   float widthScale = (float) getWidth() / bitmapWidth;
+     		   float heightScale = (float) getHeight() / bitmapHeight;
+      		  float scaleFactor = Math.max(widthScale, heightScale);
+
+      		  matrix = new android.graphics.Matrix();
+     		   matrix.postScale(scaleFactor, scaleFactor);
+
+      		  // 计算图片居中显示的坐标偏移量
+       		 int dx = (int) ((getWidth() - bitmapWidth * scaleFactor) / 2);
+     		   int dy = (int) ((getHeight() - bitmapHeight * scaleFactor) / 2);
+      		  matrix.postTranslate(dx, dy);
+			}
 		}
 
 		private void initRoundRect(){
@@ -108,28 +131,59 @@
 	}
 
 	public float getBottomRightRadius(){
-	return this.radius[4];
+		return this.radius[4];
 	}
 
 	public void setBottomLeftRadius(float radius){
-	this.radius[6] = radius;
-	this.radius[7] = radius;
+		this.radius[6] = radius;
+		this.radius[7] = radius;
 	}
 
 	public float getBottomLeftRadius(){
-	return this.radius[6];
+		return this.radius[6];
 	}
 
 	public void setImage(android.graphics.Bitmap image){
-	this.image = image;
-	invalidate();
+		this.image = image;
+		initScale();
+		invalidate();
 	}
 
 	public android.graphics.Bitmap getImage(){
-	return this.image;
+		return this.image;
 	}
+	
+	/*private android.graphics.Bitmap getBitmapByDrawable(){
+		if(getDrawable() != null){
+		android.graphics.drawable.Drawable drawable = getDrawable();
+		drawable.setColorFilter(0xffff0000, android.graphics.PorterDuff.Mode.SRC_IN);
+		int width = drawable.getIntrinsicWidth();
+		int height = drawable.getIntrinsicHeight();
+		android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888);
+		android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+		drawable.setBounds(0, 0, width, height);
+		drawable.draw(canvas);
+		return bitmap;
+		}else{
+		    return null;
+		}
+	}*/
 	}
+	
 	@end
+	
+	属性写 图片资源(资源 : 图片资源)
+		@code
+		android.graphics.drawable.Drawable drawable = #取安卓环境().getResources().getDrawable(#资源);
+		int width = drawable.getIntrinsicWidth();
+		int height = drawable.getIntrinsicHeight();
+		android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888);
+		android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+		drawable.setBounds(0, 0, width, height);
+		drawable.draw(canvas);
+		getView().setImage(bitmap);
+		@end
+	结束 属性
 
 	属性写 位图对象(图片 : 位图对象)
 		code getView().setImage(#图片);
